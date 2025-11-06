@@ -2,88 +2,78 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <title>写真集詳細 | グラビア部！</title>
+    <title>グラビア部！写真集ランキング</title>
     <style>
-      body { font-family: sans-serif; background: #f5f5f5; margin: 0; }
-      header { background: #000; color: #fff; padding: 12px 16px; }
-      header a { color: #fff; text-decoration: none; }
-      main { max-width: 1000px; margin: 20px auto; padding: 0 16px; display: flex; gap: 20px; }
-      .cover { width: 320px; aspect-ratio: 3/4; background: #ddd center/cover no-repeat; border-radius: 10px; }
-      .info { flex: 1; }
-      .title { font-size: 22px; margin-bottom: 6px; }
-      .sub { color: #666; margin-bottom: 14px; }
-      .score-row { display: flex; gap: 16px; margin-bottom: 20px; }
-      .box { background: #fff; border-radius: 10px; padding: 10px 14px; }
-      .big { font-size: 36px; font-weight: 700; }
+      body { font-family: sans-serif; margin: 0; background: #f5f5f5; }
+      header { background: #000; color: #fff; padding: 14px 20px; }
+      header h1 { margin: 0; font-size: 18px; }
+      main { max-width: 1100px; margin: 20px auto; padding: 0 16px; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+      .card-link { text-decoration: none; color: inherit; }
+      .card { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+      .thumb { width: 100%; aspect-ratio: 3 / 4; background: #ddd center/cover no-repeat; }
+      .content { padding: 12px 14px 14px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+      .title { font-size: 14px; line-height: 1.4; }
+      .meta { font-size: 11px; color: #666; }
+      .score-row { margin-top: auto; display: flex; gap: 6px; }
+      .score { background: #0f9d58; color: #fff; border-radius: 6px; padding: 2px 6px; font-weight: 600; font-size: 13px; }
+      .userscore { background: #4285f4; color: #fff; border-radius: 6px; padding: 2px 6px; font-size: 13px; }
     </style>
   </head>
   <body>
     <header>
-      <a href="index.html">← 一覧にもどる</a>
+      <h1>グラビア部！写真集ランキング</h1>
     </header>
     <main>
-      <div id="cover" class="cover"></div>
-      <div class="info">
-        <div id="title" class="title"></div>
-        <div id="meta" class="sub"></div>
-        <div class="score-row">
-          <div class="box">
-            <div>メタスコア</div>
-            <div id="metaScore" class="big"></div>
+      <p>話題作から埋もれ名作まで、写真集をスコアで比較できるようにするサイトのテスト版です。</p>
+
+      <div class="grid">
+        <!-- 1冊目 賀喜 -->
+        <a class="card-link" href="detail.html?id=kaki">
+          <div class="card">
+            <div class="thumb" style="background-image:url('https://placehold.co/400x520?text=Kaki');"></div>
+            <div class="content">
+              <div class="title">乃木坂46 賀喜遥香1st写真集</div>
+              <div class="meta">小学館 / 2022-06-07</div>
+              <div class="score-row">
+                <div class="score">メタ 87</div>
+                <div class="userscore">ユーザー 8.4</div>
+              </div>
+            </div>
           </div>
-          <div class="box">
-            <div>ユーザースコア</div>
-            <div id="userScore" class="big"></div>
+        </a>
+
+        <!-- 2冊目 みな実 -->
+        <a class="card-link" href="detail.html?id=minami">
+          <div class="card">
+            <div class="thumb" style="background-image:url('https://placehold.co/400x520?text=Minami');"></div>
+            <div class="content">
+              <div class="title">田中みな実1st写真集</div>
+              <div class="meta">宝島社 / 2019-12-13</div>
+              <div class="score-row">
+                <div class="score">メタ 90</div>
+                <div class="userscore">ユーザー 8.9</div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="box" id="desc"></div>
+        </a>
+
+        <!-- 3冊目 ニコル -->
+        <a class="card-link" href="detail.html?id=nicole">
+          <div class="card">
+            <div class="thumb" style="background-image:url('https://placehold.co/400x520?text=Nicole');"></div>
+            <div class="content">
+              <div class="title">藤田ニコル写真集</div>
+              <div class="meta">講談社 / 2018-02-22</div>
+              <div class="score-row">
+                <div class="score">メタ 82</div>
+                <div class="userscore">ユーザー 7.8</div>
+              </div>
+            </div>
+          </div>
+        </a>
+
       </div>
     </main>
-
-    <script>
-      const data = {
-        kaki: {
-          title: "乃木坂46 賀喜遥香1st写真集",
-          meta: "小学館 / 2022-06-07",
-          cover: "https://placehold.co/600x800?text=Kaki",
-          metaScore: 87,
-          userScore: 8.4,
-          desc: "マルタ島ロケ。制服、水着ありで構成が良い。"
-        },
-        minami: {
-          title: "田中みな実1st写真集",
-          meta: "宝島社 / 2019-12-13",
-          cover: "https://placehold.co/600x800?text=Minami",
-          metaScore: 90,
-          userScore: 8.9,
-          desc: "女性人気も高いタイプの写真集。"
-        },
-        nicole: {
-          title: "藤田ニコル写真集",
-          meta: "講談社 / 2018-02-22",
-          cover: "https://placehold.co/600x800?text=Nicole",
-          metaScore: 82,
-          userScore: 7.8,
-          desc: "ポップ路線。"
-        }
-      };
-
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get("id");
-
-      const item = data[id];
-
-      if (item) {
-        document.getElementById("title").textContent = item.title;
-        document.getElementById("meta").textContent = item.meta;
-        document.getElementById("cover").style.backgroundImage = `url('${item.cover}')`;
-        document.getElementById("metaScore").textContent = item.metaScore;
-        document.getElementById("userScore").textContent = item.userScore;
-        document.getElementById("desc").textContent = item.desc;
-      } else {
-        document.getElementById("title").textContent = "この写真集は見つかりませんでした";
-        document.getElementById("desc").textContent = "URLの ?id= で指定してください。";
-      }
-    </script>
   </body>
 </html>
