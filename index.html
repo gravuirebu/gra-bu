@@ -68,7 +68,15 @@
       try {
         const response = await fetch('./グラビア部！保存情報.csv');
         if (!response.ok) throw new Error('CSVを取得できませんでした');
-        const books = parseCSV(await response.text())
+        // UTF-8とExcelのShift-JISの両方に対応
+        const bytes = await response.arrayBuffer();
+        let csvText;
+        try {
+          csvText = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+        } catch (error) {
+          csvText = new TextDecoder('shift_jis').decode(bytes);
+        }
+        const books = parseCSV(csvText)
           .filter(book => book['作品ID'] && book['タイトル'])
           .sort((a, b) => (b['発売日'] || '').localeCompare(a['発売日'] || ''));
 
