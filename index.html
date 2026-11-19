@@ -1,79 +1,119 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <title>グラビア部！写真集ランキング</title>
-    <style>
-      body { font-family: sans-serif; margin: 0; background: #f5f5f5; }
-      header { background: #000; color: #fff; padding: 14px 20px; }
-      header h1 { margin: 0; font-size: 18px; }
-      main { max-width: 1100px; margin: 20px auto; padding: 0 16px; }
-      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-      .card-link { text-decoration: none; color: inherit; }
-      .card { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
-      .thumb { width: 100%; aspect-ratio: 3 / 4; background: #ddd center/cover no-repeat; }
-      .content { padding: 12px 14px 14px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
-      .title { font-size: 14px; line-height: 1.4; }
-      .meta { font-size: 11px; color: #666; }
-      .score-row { margin-top: auto; display: flex; gap: 6px; }
-      .score { background: #0f9d58; color: #fff; border-radius: 6px; padding: 2px 6px; font-weight: 600; font-size: 13px; }
-      .userscore { background: #4285f4; color: #fff; border-radius: 6px; padding: 2px 6px; font-size: 13px; }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>グラビア部！写真集ランキング</h1>
-    </header>
-    <main>
-      <p>話題作から埋もれ名作まで、写真集をスコアで比較できるようにするサイトのテスト版です。</p>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>グラビア部！写真集ランキング</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; background: #f5f5f5; }
+    header { background: #000; color: #fff; padding: 14px 20px; }
+    header h1 { margin: 0; font-size: 18px; }
+    main { max-width: 1100px; margin: 20px auto; padding: 0 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .card-link { text-decoration: none; color: inherit; }
+    .card { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; }
+    .thumb { width: 100%; aspect-ratio: 3 / 4; background: #ddd; display: flex; align-items: center; justify-content: center; color: #777; font-size: 14px; }
+    .content { padding: 12px 14px 14px; flex: 1; display: flex; flex-direction: column; gap: 5px; }
+    .title { font-size: 14px; font-weight: bold; line-height: 1.5; }
+    .person { font-size: 13px; }
+    .meta { font-size: 11px; color: #666; }
+    .score-row { margin-top: auto; padding-top: 8px; display: flex; gap: 6px; }
+    .score { background: #777; color: #fff; border-radius: 6px; padding: 3px 7px; font-weight: 600; font-size: 13px; }
+    #status { font-size: 14px; color: #666; }
+  </style>
+</head>
+<body>
+  <header><h1>グラビア部！写真集ランキング</h1></header>
+  <main>
+    <p>日本の女性写真集を紹介するサイトです。現在、ランキングの準備中です。</p>
+    <p id="status">写真集データを読み込んでいます…</p>
+    <div class="grid" id="grid"></div>
+  </main>
 
-      <div class="grid">
-        <!-- 1冊目 賀喜 -->
-        <a class="card-link" href="detail.html?id=kaki">
-          <div class="card">
-            <div class="thumb" style="background-image:url('https://placehold.co/400x520?text=Kaki');"></div>
-            <div class="content">
-              <div class="title">乃木坂46 賀喜遥香1st写真集</div>
-              <div class="meta">小学館 / 2022-06-07</div>
-              <div class="score-row">
-                <div class="score">メタ 87</div>
-                <div class="userscore">ユーザー 8.4</div>
-              </div>
-            </div>
-          </div>
-        </a>
+  <script>
+    // CSV内のカンマ・改行・引用符にも対応する読み込み処理
+    function parseCSV(text) {
+      const rows = [];
+      let row = [], cell = '', inQuotes = false;
+      text = text.replace(/^\uFEFF/, '');
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (inQuotes) {
+          if (ch === '"' && text[i + 1] === '"') { cell += '"'; i++; }
+          else if (ch === '"') inQuotes = false;
+          else cell += ch;
+        } else if (ch === '"') {
+          inQuotes = true;
+        } else if (ch === ',') {
+          row.push(cell); cell = '';
+        } else if (ch === '\n') {
+          row.push(cell.replace(/\r$/, ''));
+          if (row.some(value => value !== '')) rows.push(row);
+          row = []; cell = '';
+        } else {
+          cell += ch;
+        }
+      }
+      row.push(cell.replace(/\r$/, ''));
+      if (row.some(value => value !== '')) rows.push(row);
+      const headers = (rows.shift() || []).map(h => h.trim());
+      return rows.map(cells => Object.fromEntries(
+        headers.map((header, i) => [header, (cells[i] || '').trim()])
+      ));
+    }
 
-        <!-- 2冊目 みな実 -->
-        <a class="card-link" href="detail.html?id=minami">
-          <div class="card">
-            <div class="thumb" style="background-image:url('https://placehold.co/400x520?text=Minami');"></div>
-            <div class="content">
-              <div class="title">田中みな実1st写真集</div>
-              <div class="meta">宝島社 / 2019-12-13</div>
-              <div class="score-row">
-                <div class="score">メタ 90</div>
-                <div class="userscore">ユーザー 8.9</div>
-              </div>
-            </div>
-          </div>
-        </a>
+    async function loadBooks() {
+      const status = document.getElementById('status');
+      const grid = document.getElementById('grid');
+      try {
+        const response = await fetch('./グラビア部！保存情報.csv');
+        if (!response.ok) throw new Error('CSVを取得できませんでした');
+        const books = parseCSV(await response.text())
+          .filter(book => book['作品ID'] && book['タイトル'])
+          .sort((a, b) => (b['発売日'] || '').localeCompare(a['発売日'] || ''));
 
-        <!-- 3冊目 ニコル -->
-        <a class="card-link" href="detail.html?id=nicole">
-          <div class="card">
-            <div class="thumb" style="background-image:url('https://placehold.co/400x520?text=Nicole');"></div>
-            <div class="content">
-              <div class="title">藤田ニコル写真集</div>
-              <div class="meta">講談社 / 2018-02-22</div>
-              <div class="score-row">
-                <div class="score">メタ 82</div>
-                <div class="userscore">ユーザー 7.8</div>
-              </div>
-            </div>
-          </div>
-        </a>
+        for (const book of books) {
+          const link = document.createElement('a');
+          link.className = 'card-link';
+          link.href = 'detail.html?id=' + encodeURIComponent(book['作品ID']);
 
-      </div>
-    </main>
-  </body>
+          const card = document.createElement('div');
+          card.className = 'card';
+          const thumb = document.createElement('div');
+          thumb.className = 'thumb';
+          thumb.textContent = '表紙画像 未登録';
+          const content = document.createElement('div');
+          content.className = 'content';
+
+          const title = document.createElement('div');
+          title.className = 'title';
+          title.textContent = book['タイトル'];
+          const person = document.createElement('div');
+          person.className = 'person';
+          person.textContent = book['氏名'] || '';
+          const meta = document.createElement('div');
+          meta.className = 'meta';
+          meta.textContent = [book['出版社'], book['発売日']].filter(Boolean).join(' / ');
+
+          const scoreRow = document.createElement('div');
+          scoreRow.className = 'score-row';
+          const score = document.createElement('span');
+          score.className = 'score';
+          score.textContent = 'メタ 未集計';
+          scoreRow.appendChild(score);
+
+          content.append(title, person, meta, scoreRow);
+          card.append(thumb, content);
+          link.appendChild(card);
+          grid.appendChild(link);
+        }
+        status.textContent = books.length + '冊を表示しています（発売日の新しい順）';
+      } catch (error) {
+        status.textContent = 'CSVを読み込めませんでした。ファイル名と保存場所を確認してください。';
+        console.error(error);
+      }
+    }
+    loadBooks();
+  </script>
+</body>
 </html>
