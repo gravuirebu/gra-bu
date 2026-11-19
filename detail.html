@@ -1,88 +1,133 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <title>写真集詳細 | グラビア部！</title>
-    <style>
-      body { font-family: sans-serif; background: #f5f5f5; margin: 0; }
-      header { background: #000; color: #fff; padding: 12px 16px; }
-      header a { color: #fff; text-decoration: none; }
-      main { max-width: 1000px; margin: 20px auto; padding: 0 16px; display: flex; gap: 20px; }
-      .cover { width: 320px; aspect-ratio: 3/4; background: #ddd center/cover no-repeat; border-radius: 10px; }
-      .info { flex: 1; }
-      .title { font-size: 22px; margin-bottom: 6px; }
-      .sub { color: #666; margin-bottom: 14px; }
-      .score-row { display: flex; gap: 16px; margin-bottom: 20px; }
-      .box { background: #fff; border-radius: 10px; padding: 10px 14px; }
-      .big { font-size: 36px; font-weight: 700; }
-    </style>
-  </head>
-  <body>
-    <header>
-      <a href="index.html">← 一覧にもどる</a>
-    </header>
-    <main>
-      <div id="cover" class="cover"></div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>写真集詳細 | グラビア部！</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: sans-serif; background: #f5f5f5; margin: 0; color: #222; }
+    header { background: #000; color: #fff; padding: 14px 20px; }
+    header a { color: #fff; text-decoration: none; font-weight: bold; font-size: 18px; }
+    main { max-width: 1000px; margin: 24px auto; padding: 0 16px; }
+    .back { color: #444; font-size: 14px; }
+    .layout { display: flex; gap: 22px; align-items: flex-start; margin-top: 20px; }
+    .layout[hidden] { display: none; }
+    .cover { width: 320px; flex: 0 0 320px; aspect-ratio: 3 / 4; background: #ddd; border-radius: 10px; display: flex; align-items: center; justify-content: center; text-align: center; color: #777; font-size: 14px; }
+    .info { flex: 1; min-width: 0; }
+    h1 { font-size: 24px; line-height: 1.45; margin: 0 0 12px; overflow-wrap: anywhere; }
+    .person { margin: 0 0 16px; font-size: 18px; }
+    .score { display: inline-block; background: #fff; padding: 12px 16px; border-radius: 10px; margin-bottom: 18px; color: #555; font-weight: bold; }
+    dl { background: #fff; padding: 4px 16px; border-radius: 10px; margin: 0; }
+    dl > div { display: grid; grid-template-columns: 90px 1fr; gap: 10px; border-bottom: 1px solid #eee; padding: 12px 0; }
+    dl > div:last-child { border-bottom: 0; }
+    dt { color: #666; font-size: 13px; }
+    dd { margin: 0; font-size: 14px; overflow-wrap: anywhere; }
+    #status { color: #555; font-size: 14px; }
+    @media (max-width: 650px) {
+      .layout { flex-direction: column; }
+      .cover { width: min(100%, 320px); flex: none; }
+      h1 { font-size: 21px; }
+    }
+  </style>
+</head>
+<body>
+  <header><a href="index.html">グラビア部！写真集ランキング</a></header>
+  <main>
+    <a class="back" href="index.html">← 写真集一覧にもどる</a>
+    <p id="status">写真集の情報を読み込んでいます…</p>
+    <section id="detail" class="layout" hidden>
+      <div class="cover">表紙画像 未登録</div>
       <div class="info">
-        <div id="title" class="title"></div>
-        <div id="meta" class="sub"></div>
-        <div class="score-row">
-          <div class="box">
-            <div>メタスコア</div>
-            <div id="metaScore" class="big"></div>
-          </div>
-          <div class="box">
-            <div>ユーザースコア</div>
-            <div id="userScore" class="big"></div>
-          </div>
-        </div>
-        <div class="box" id="desc"></div>
+        <h1 id="title"></h1>
+        <p id="person" class="person"></p>
+        <div class="score">メタスコア：未集計</div>
+        <dl>
+          <div><dt>出版社</dt><dd id="publisher"></dd></div>
+          <div><dt>発売日</dt><dd id="release"></dd></div>
+          <div><dt>ISBN</dt><dd id="isbn"></dd></div>
+          <div><dt>作品ID</dt><dd id="bookid"></dd></div>
+        </dl>
       </div>
-    </main>
-
-    <script>
-      const data = {
-        kaki: {
-          title: "乃木坂46 賀喜遥香1st写真集",
-          meta: "小学館 / 2022-06-07",
-          cover: "https://placehold.co/600x800?text=Kaki",
-          metaScore: 87,
-          userScore: 8.4,
-          desc: "マルタ島ロケ。制服・水着ありで構成が良い。"
-        },
-        minami: {
-          title: "田中みな実1st写真集",
-          meta: "宝島社 / 2019-12-13",
-          cover: "https://placehold.co/600x800?text=Minami",
-          metaScore: 90,
-          userScore: 8.9,
-          desc: "女性人気も高いタイプの写真集。"
-        },
-        nicole: {
-          title: "藤田ニコル写真集",
-          meta: "講談社 / 2018-02-22",
-          cover: "https://placehold.co/600x800?text=Nicole",
-          metaScore: 82,
-          userScore: 7.8,
-          desc: "ポップ寄りの構成。"
+    </section>
+  </main>
+  <script>
+    // 一覧ページと同じ形式で、CSVのカンマ・改行・引用符を読み取ります。
+    function parseCSV(text) {
+      const rows = [];
+      let row = [], cell = '', inQuotes = false;
+      text = text.replace(/^\uFEFF/, '');
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (inQuotes) {
+          if (ch === '"' && text[i + 1] === '"') { cell += '"'; i++; }
+          else if (ch === '"') inQuotes = false;
+          else cell += ch;
+        } else if (ch === '"') {
+          inQuotes = true;
+        } else if (ch === ',') {
+          row.push(cell); cell = '';
+        } else if (ch === '\n') {
+          row.push(cell.replace(/\r$/, ''));
+          if (row.some(value => value !== '')) rows.push(row);
+          row = []; cell = '';
+        } else {
+          cell += ch;
         }
-      };
-
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get("id");
-      const item = data[id];
-
-      if (item) {
-        document.getElementById("title").textContent = item.title;
-        document.getElementById("meta").textContent = item.meta;
-        document.getElementById("cover").style.backgroundImage = `url('${item.cover}')`;
-        document.getElementById("metaScore").textContent = item.metaScore;
-        document.getElementById("userScore").textContent = item.userScore;
-        document.getElementById("desc").textContent = item.desc;
-      } else {
-        document.getElementById("title").textContent = "この写真集は見つかりませんでした";
-        document.getElementById("desc").textContent = "URLの ?id= で指定してください。";
       }
-    </script>
-  </body>
+      row.push(cell.replace(/\r$/, ''));
+      if (row.some(value => value !== '')) rows.push(row);
+      const headers = (rows.shift() || []).map(h => h.trim());
+      return rows.map(cells => Object.fromEntries(
+        headers.map((header, i) => [header, (cells[i] || '').trim()])
+      ));
+    }
+
+    async function loadBook() {
+      const status = document.getElementById('status');
+      const id = new URLSearchParams(window.location.search).get('id');
+      if (!id) {
+        status.textContent = '作品が指定されていません。一覧ページから写真集を選んでください。';
+        return;
+      }
+      try {
+        // GitHubに保存されているCSVのファイル名と一致させています。
+        const response = await fetch('./グラビア部！保存情報.csv');
+        if (!response.ok) throw new Error('CSVを取得できませんでした');
+
+        // ExcelのCSV（Shift-JIS）とCSV UTF-8のどちらにも対応します。
+        const bytes = await response.arrayBuffer();
+        let csvText;
+        try {
+          csvText = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+        } catch (error) {
+          csvText = new TextDecoder('shift_jis').decode(bytes);
+        }
+
+        const book = parseCSV(csvText).find(item => item['作品ID'] === id);
+        if (!book || !book['タイトル']) {
+          status.textContent = '指定された写真集が見つかりませんでした。一覧ページから選び直してください。';
+          return;
+        }
+
+        function setText(elementId, value) {
+          document.getElementById(elementId).textContent = value || '未登録';
+        }
+        setText('title', book['タイトル']);
+        setText('person', book['氏名']);
+        setText('publisher', book['出版社']);
+        setText('release', book['発売日']);
+        setText('isbn', book['ISBN']);
+        setText('bookid', book['作品ID']);
+        document.title = book['タイトル'] + ' | グラビア部！';
+        document.getElementById('detail').hidden = false;
+        status.hidden = true;
+      } catch (error) {
+        status.textContent = 'CSVを読み込めませんでした。ファイル名と保存場所を確認してください。';
+        console.error(error);
+      }
+    }
+    loadBook();
+  </script>
+</body>
 </html>
